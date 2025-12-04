@@ -1,19 +1,35 @@
 import RealworldE2ETest from './realworld';
 
-const testSuite = new RealworldE2ETest;
-
 async function runTests() {
+    console.log(' Запуск E2E тестов для Realworld\n');
+
+    const testSuite = new RealworldE2ETest();
+
     try {
+        // Настраиваем окружение
         await testSuite.setup();
+        console.log(' Браузер запущен\n');
+
+        // Создаем папку для скриншотов
+        const fs = require('fs');
+        if (!fs.existsSync('screenshots')) {
+            fs.mkdirSync('screenshots');
+        }
+
+
         await testSuite.testFullScenario();
 
-    } catch(error) {
-        console.error('Тесты завершились с ошибкой:', error);
+        console.log('\n Все тесты успешно завершены!');
+
+    } catch (error: any) {
+        console.error('\n Тесты завершились с ошибкой:', error.message);
         process.exit(1);
+
     } finally {
+
         await testSuite.teardown();
-        console.log('Тесты завершены, браузер закрыт');
     }
 }
+
 
 runTests();
